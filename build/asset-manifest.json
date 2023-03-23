@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.5119bf64.css",
+    "main.js": "/static/js/main.7e4d01f1.js",
+    "static/media/hback.png": "/static/media/hback.a3a8fd7099e89bd8517b.png",
+    "static/media/who_we_are.jpg": "/static/media/who_we_are.b45b8d08e2a71ffeae3f.jpg",
+    "static/media/candidate_points.jpg": "/static/media/candidate_points.70e845e6859af575067b.jpg",
+    "static/media/easy.jpg": "/static/media/easy.568f3328988c537e2782.jpg",
+    "static/media/time.jpg": "/static/media/time.4a09f0d3370fd2e7f192.jpg",
+    "static/media/usman.jpg": "/static/media/usman.12071e60448c4372d380.jpg",
+    "static/media/fast_hiring.jpg": "/static/media/fast_hiring.c4b0705dc97013275b7d.jpg",
+    "static/media/moyez.jpg": "/static/media/moyez.314be6121cb006717c7c.jpg",
+    "static/media/strong_profile.jpg": "/static/media/strong_profile.64e6a3799cf5fb38f7a7.jpg",
+    "static/media/bilal.jpg": "/static/media/bilal.41f717c8ba7ebbc30ca1.jpg",
+    "static/media/cv1.jpg": "/static/media/cv1.93780d8884980c94d483.jpg",
+    "static/media/pablo.jpg": "/static/media/pablo.fb4d1d479c432cd3e6be.jpg",
+    "static/media/insta.png": "/static/media/insta.ac32ec0a111aeba03298.png",
+    "static/media/twitter.png": "/static/media/twitter.67ad063d90a28a5bdecc.png",
+    "static/media/fb.png": "/static/media/fb.bfd1cfff9f9521198b26.png",
+    "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/index.html",
+    "main.5119bf64.css.map": "/static/css/main.5119bf64.css.map",
+    "main.7e4d01f1.js.map": "/static/js/main.7e4d01f1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5119bf64.css",
+    "static/js/main.7e4d01f1.js"
+  ]
+}
