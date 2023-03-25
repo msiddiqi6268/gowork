@@ -13,7 +13,7 @@ router.post('/', async(req, res)=>{
     } 
 });
 
-//Get a concersation from the database
+//Get a conversation from the database
 
 router.get('/:conversationId', async(req, res)=>{
     try {

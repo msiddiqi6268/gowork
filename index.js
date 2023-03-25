@@ -16,6 +16,7 @@ import generalRoutes from './Routes/generalRoutes.js'
 import AdminRoutes from './Routes/AdminRoutes.js'
 import CandidateRoutes from './Routes/CandidateRoutes.js'
 import CoversationRoutes from './Routes/conversations.js';
+import MessageRoutes from './Routes/messages.js';
 
 
 
@@ -56,6 +57,7 @@ app.use('/emp',empRoutes)
 app.use('/admin',AdminRoutes)
 app.use('/candidate',CandidateRoutes)
 app.use('/conversation', CoversationRoutes)
+app.use('/messages', MessageRoutes);
 
 
 app.use((err, req, res, next) => {
