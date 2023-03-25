@@ -1,16 +1,17 @@
+
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
     ConversationId:{
-        type:mongoose.SchemaTypes.ObjectId,
+        type:string,
         required:true,
     },
     sender: {
-        type: mongoose.SchemaType.ObjectId,
+        type: string,
         required: true,
     },
     text: {
-        type: mongoose.SchemaType.ObjectId,
+        type: string,
     }
 })
 

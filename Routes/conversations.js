@@ -15,5 +15,18 @@ router.post('/', async (req, res)=>{
     }
 });
 
+/** Get a user Conversation from database if match userId */
+
+router.get('/:userId', async(req, res)=>{
+    try {
+        const conversation = await Conversation.find({
+            members: { $in : [req.params.userId]}
+        });
+        res.status(200).json(conversation);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+})
+
 
 export default router;

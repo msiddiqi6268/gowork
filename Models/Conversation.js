@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const ConverationSchema = new mongoose.Schema({
     members:{
-        type:mongoose.SchemaTypes.ObjectId,
+        type: Array,
         required:true,
     }
 })
