@@ -43,10 +43,7 @@ app.use(express.static('public'));
 app.use(express.static(dir + '/public'));
 app.use(express.static(dir + '/build'));
 app.use(express.static('build'))
-
-
-console.log(path.join(dir, "build", "index.html"))
-app.get("/*", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(dir,"build","index.html"));
  });
 app.use('/gen',generalRoutes)
