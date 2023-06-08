@@ -7,7 +7,7 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import { fileURLToPath } from 'url';
 import path,{ dirname } from 'path';
-
+import {Server }  from 'socket.io'
 
 
 import authRoutes from './Routes/AuthRoutes.js'
@@ -16,7 +16,7 @@ import generalRoutes from './Routes/generalRoutes.js'
 import AdminRoutes from './Routes/AdminRoutes.js'
 import CandidateRoutes from './Routes/CandidateRoutes.js'
 import CoversationRoutes from './Routes/conversations.js';
-import MessageRoutes from './Routes/messages.js';
+// import MessageRoutes from './Routes/messages.js';
 
 
 
@@ -41,24 +41,22 @@ app.set('public',path.join(dir,'public'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.static(dir + '/public'));
-
-console.log(path.join(dir, "build", "index.html"))
-app.get("/", (req, res) => {
-  res.sendFile(path.join(dir,"build","index.html"));
- });
-
-
- app.use(express.static(dir + '/build'));
+app.use(express.static(dir + '/build'));
 app.use(express.static('build'))
 
-app.use('/',generalRoutes)
+
+console.log(path.join(dir, "build", "index.html"))
+
+app.use('/gen',generalRoutes)
 app.use('/auth',authRoutes)
 app.use('/emp',empRoutes)
 app.use('/admin',AdminRoutes)
 app.use('/candidate',CandidateRoutes)
 app.use('/conversation', CoversationRoutes)
-app.use('/messages', MessageRoutes);
-
+// app.use('/messages', MessageRoutes);
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.join(dir,"build","index.html"));
+//  });
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500)
@@ -71,6 +69,7 @@ app.use((err, req, res, next) => {
   })
 
 // -------------MONGOOSE SETUP-----------
+let server = null
 const PORT = parseInt(process.env.PORT) || 9001
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL,{
@@ -79,13 +78,51 @@ mongoose.connect(process.env.MONGO_URL,{
     useUnifiedTopology:true,
     dbName :'gowork'
 }).then(()=>{
-    app.listen(PORT, ()=>{console.log(`Server is running at port ${PORT}`)})
+    server = app.listen(PORT, ()=>{console.log(`Server is running at port ${PORT}`)})
 }).catch((error)=>{
     console.log(`${error}`)
 })
 
-process.on('SIGINT',async()=>{
-    await mongoose.close()
-    console.log('mongoose disconnected')
-    process.exit(0)
+
+const io = new Server(8900, { cors: { origin: '*' } });
+
+let users = [];
+
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
+};
+
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
+
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
+
+
+io.on('connection', (socket)=>{
+
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
+
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId);
+    io.to(user?.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
+
+  //when disconnect
+  socket.on("disconnect", () => {
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
 })

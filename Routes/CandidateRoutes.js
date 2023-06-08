@@ -4,7 +4,9 @@ import { send_personal_info,get_personal_info,
     send_experience_info ,get_experience_info,
     send_about_info ,get_about_info,
     send_skills_info ,get_skills_info,
-    send_dashboard_data
+    send_dashboard_data,
+    get_offers,
+    get_offer_details
 } 
     from '../Controllers/CandidateController.js';
 const router = express.Router();
@@ -27,6 +29,9 @@ router.post('/send-about-info',send_about_info)
 router.get('/get-about-info',get_about_info)
 
 router.get('/dashboard_data',send_dashboard_data)
+router.get('/get-offers',get_offers)
+router.post('/get-offer-details',get_offer_details)
+// router.get('/offer-details',send_dashboard_data)
 
 
 export default router

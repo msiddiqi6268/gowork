@@ -1,9 +1,7 @@
 import User from "../Models/User.js";
 import bcrypt from 'bcrypt'
-import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
-import SgMail from '@sendgrid/mail'
 import Validation_keys from "../Models/Vaildation_keys.js";
 import jwtDecode from "jwt-decode";
 import * as schedule from 'node-schedule'
@@ -19,6 +17,7 @@ dotenv.config()
 import nodeMailgun from 'nodemailer-mailgun-transport'
 import FreeTrial from "../Models/FreeTrial.js";
 import Pricing from "../Models/Pricing.js";
+import Package from "../Models/Package.js";
 
 
 export const login = async (req, resp, next) => {
@@ -88,10 +87,16 @@ export const register = async (req, res, next) => {
         const price = await Pricing.find({ title: "Free Trial" })
         time.setDate(time.getDate() + price.duration);
         if (user.role == 'employer') {
-            const freetrial = await FreeTrial.create({user_id:user._id})
-            schedule.scheduleJob(time, async ()=>{
-                await FreeTrial.findOneAndUpdate({user_id:user.id},{expired:true})
-              });
+            // const freetrial = await FreeTrial.create({user_id:user._id})
+            // schedule.scheduleJob(time, async ()=>{
+            //     await FreeTrial.findOneAndUpdate({user_id:user.id},{expired:true})
+            //   });
+            const free_trial = await Pricing.findOne({title:'Free Trial'})
+            Package.create({user_id:user._id,
+                package_name:'Free Trial',
+                connects:free_trial.connects,
+                end_date: getAddedDays(free_trial.duration)
+            })
         }
        
         const accessToken = await signAccessToken({
@@ -122,6 +127,13 @@ export const register = async (req, res, next) => {
         next(e)
     }
 }
+
+const getAddedDays = (duration)=>{
+    var someDate = new Date();
+    var result = someDate.setDate(someDate.getDate() + duration);
+    return new Date(result)
+}
+
 
 
 // -----------------MAIL TRANSPORTER-------------
@@ -212,8 +224,7 @@ export const resend_verification_email = async (req, resp) => {
     const bearerToken = token.split(' ')[1]
     const { email } = jwtDecode(bearerToken)
     const user = await User.findOne({ email: email })
-    console.log(userExists)
-    if (userExists) {
+    if (user) {
         await Otp.deleteMany({ userEmail })
     }
 
@@ -260,7 +271,7 @@ export const adminLogin = async (req, resp) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email })
     console.log(user)
-    if (user.role == 'admin') {
+    if (user && user.role == 'admin') {
         console.log('heel')
     }
     else {
@@ -271,28 +282,26 @@ export const adminLogin = async (req, resp) => {
     }
     const checkPassword = await bcrypt.compare(password, user.password);
     if (checkPassword) {
-        const token = jwt.sign(
-            {
-                user_id: user._id,
-                username: user.username,
-                userEmail: user.email,
-                userRole: user.role
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: process.env.JWT_LIFETIME,
-            }
-        );
-
+        const accessToken = await signAccessToken({
+            user_id: user.id,
+            role: user.role,
+            username: user.username,
+            email:user.email
+        })
+        const refreshToken = await signRefreshToken({
+            user_id: user.id,
+            role: user.role,
+            username: user.username,
+            email:user.email
+        })
         return resp.status(201).json({
             user: {
                 user_id: user._id,
-                email: user.email,
+                email: email,
                 username: user.username,
-                verified: user.verified,
                 role: user.role,
             },
-            token
+            accessToken, refreshToken
         })
     }
     else {

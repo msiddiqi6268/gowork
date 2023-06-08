@@ -21,7 +21,7 @@ const ExperienceSchema = new mongoose.Schema({
                 type:Date,
                 required:true
             },
-            start_date:{
+            end_date:{
                 type:Date ,
                 required:true
             },  

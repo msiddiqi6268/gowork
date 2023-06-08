@@ -1,10 +1,16 @@
 import mongoose from "mongoose";
 
-const ConverationSchema = new mongoose.Schema({
-    members:{
-        type: Array,
+const ConversationSchema = new mongoose.Schema({
+    candidate:{
+        type: mongoose.SchemaTypes.ObjectId,
         required:true,
-    }
+        ref:'user'
+    },
+    employer:{
+        type: mongoose.SchemaTypes.ObjectId,
+        required:true,
+        ref:'user'
+    },
 })
 
 const Conversation = mongoose.model('Conversation',ConversationSchema)

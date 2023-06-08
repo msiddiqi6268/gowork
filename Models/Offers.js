@@ -6,16 +6,33 @@ const OfferSchema = new mongoose.Schema({
         ref:'user',
         required:true
     },
-    candidate:{
-        type:mongoose.SchemaTypes.ObjectId,
-        ref:'user',
+    candidates:[
+        {
+            type:mongoose.SchemaTypes.ObjectId,
+            ref:'user',
+            required:true
+        }
+    ],
+    position:{
+        type:String,
         required:true
     },
-    job:{
-        type:mongoose.SchemaTypes.ObjectId,
-        ref:'Job',
+    job_type:{
+        type:String,
         required:true
-    }
+    },
+    min_salary:{
+        type:Number,
+        requried:true
+    },
+    max_salary:{
+        type:Number,
+        requried:true
+    },
+    job_description:{
+        type:String,
+        required:true
+    },
 },
 )
 

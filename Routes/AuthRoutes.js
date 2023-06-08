@@ -12,7 +12,7 @@ router.post('/access-token',access_token)
 router.delete('/logout',logout)
 router.post('/verify',verify)
 router.get('/resend-verification-email',resend_verification_email)
-router.get('/getuser/:id',)
+
 
 
 // ----------ADMIN------------

@@ -24,7 +24,7 @@ const JobSchema = new mongoose.Schema({
     job_description:{
         type:String,
         required:true
-    },
+    }, 
 })
 
 const Jobs = mongoose.model('Job',JobSchema)

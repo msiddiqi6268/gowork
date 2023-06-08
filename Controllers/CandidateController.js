@@ -8,6 +8,8 @@ import CandidateAbout from "../Models/CandidateAbout.js"
 import User from "../Models/User.js"
 import Certifications from "../Models/Certifications.js"
 import Offers from "../Models/Offers.js"
+import mongoose from "mongoose"
+import EmployerProfile from "../Models/EmployerProfile.js"
 
 export const send_personal_info = async(req,resp,next)=>{
     if (!req.headers['authorization']) return next(HttpErrors.Unauthorized())
@@ -238,25 +240,139 @@ export const send_about_info = async (req,resp,next)=>{
 }
 
 
-export const send_dashboard_data = (req,resp,next)=>{
+export const send_dashboard_data = async (req,resp,next)=>{
     if (!req.headers['authorization']) return next(HttpErrors.Unauthorized())
     const user_id = jwtDecode(req.headers['authorization'].split(' ')[1]).aud
-    let data = {
-        profile_views:0,
-        certifications:0,
-        offers:0
-    }
     try{
-        User.findOne({user_id:user_id},(err,doc)=>{
-            if(doc) data = {...data,profile_views:doc.profile_views}
-        })
-        Certifications.findOne({user_id:user_id},(err,doc)=>{
-            if(doc) data = {...data,certifications:doc.length()}
-        })
-        Offers.findOne({user_id:user_id},(err,doc)=>{
-            if(doc) data = {...data,offers:doc.length()}
-        })
+        const for_views =  await User.findOne({user_id:user_id})
+        const for_cert = await Certifications.find({user_id:user_id})
+        const for_offers = await Offers.find({user_id:user_id})
+        let data = {profile_views:0,certifications:0,offers:0}
+        console.log(for_cert,for_offers,for_views)
+        if(for_views){
+            data.profile_views = for_views.profile_views
+        }
+        if(for_cert){
+            data.certifications = for_cert.length
+        }
+        if(for_offers){
+            data.offers = for_offers.length
+        }
+        console.log(data)
         return resp.status(200).json(data)
+    }
+    catch(err){
+        console.log(err)
+        return resp.status(501).json({message:'Internal Server Error'})
+    }
+}
+
+
+export const get_offers1 = (req,resp,next)=>{
+    if (!req.headers['authorization']) return next(HttpErrors.Unauthorized())
+    try{
+        const {aud} = jwtDecode(req.headers['authorization'])
+        Offers.find({candidates:mongoose.Types.ObjectId(aud)},async (err,doc)=>{
+            if(err){
+                return next(HttpErrors.BadRequest())
+            }
+            else if (doc){
+                for(let i = 0;i<doc.length;i++){
+                    if(doc == []){
+                        return resp.status(200).json(doc)
+                    }
+                    else{
+                        const {company_name} = await EmployerProfile.findOne({user_id:doc[i].employer})
+                        const obj = {
+                            employer:doc[i].employer,
+                            company_name,
+                            job_type:doc[i].job_type,
+                            min_salary:doc[i].min_salary,
+                            max_salary:doc[i].max_salary,
+                            job_description:doc[i].job_description,
+                            position:doc[i].position,
+                            _id:doc[i]._id,
+                            candidates:doc[i].candidates,
+                        }
+                        doc[i] = obj
+                        console.log(doc[i])
+                    }
+                }
+                return resp.status(200).json(doc)
+            }
+        })
+    }
+    catch(err){
+        console.log(err)
+        return resp.status(501).json({message:'Internal Server Error'})
+    }
+}
+
+export const get_offers = (req,resp,next)=>{
+    if (!req.headers['authorization']) return next(HttpErrors.Unauthorized())
+    try{
+        const {aud} = jwtDecode(req.headers['authorization'])
+        Offers.find({candidates:mongoose.Types.ObjectId(aud)},async (err,doc)=>{
+            if(err){
+                return next(HttpErrors.BadRequest())
+            }
+            else if (doc){
+                for(let i = 0;i<doc.length;i++){
+                    if(doc == []){
+                        return resp.status(200).json(doc)
+                    }
+                    else{
+                        console.log(doc)
+                        const {company_name} = await EmployerProfile.findOne({user_id:doc[i].employer})
+                        const obj = {
+                            employer:doc[i].employer,
+                            company_name,
+                            job_type:doc[i].job_type,
+                            min_salary:doc[i].min_salary,
+                            max_salary:doc[i].max_salary,
+                            job_description:doc[i].job_description,
+                            position:doc[i].position,
+                            _id:doc[i]._id,
+                            candidates:doc[i].candidates,
+                        }
+                        doc[i] = obj
+                        console.log(doc[i])
+                    }
+                }
+                return resp.status(200).json(doc)
+            }
+        })
+    }
+    catch(err){
+        console.log(err)
+        return resp.status(501).json({message:'Internal Server Error'})
+    }
+}
+
+export const get_offer_details = (req,resp,next)=>{
+    if (!req.headers['authorization']) return next(HttpErrors.Unauthorized())
+    try{
+        const {id} = req.body
+        Offers.findById(id,async (err,doc)=>{
+            if(err){
+                return next(HttpErrors.BadRequest())
+            }
+            else if(doc){
+                const employer_details = await EmployerProfile.findOne({user_id:doc.employer})
+                const new_doc = {
+                    employer_details,
+                    _id:doc.id,
+                    employer:doc.employer,
+                    candidates:doc.candidates,
+                    job_type:doc.job_type,
+                    min_salary:doc.min_salary,
+                    max_salary:doc.max_salary,
+                    job_description:doc.job_description,
+                    position:doc.position
+                }
+                return resp.status(200).json(new_doc)
+            }
+        })
     }
     catch(err){
         console.log(err)

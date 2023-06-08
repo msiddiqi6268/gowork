@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import Message from '../Models/Message';
+import Message from '../Models/Message.js';
 
 //Add a new message 
 router.post('/', async(req, res)=>{
