@@ -83,7 +83,7 @@ mongoose.connect(process.env.MONGO_URL,{
 })
 
 
-const io = new Server(8900, { cors: { origin: '*' } });
+// const io = new Server(8900, { cors: { origin: '*' } });
 
 let users = [];
 
@@ -102,26 +102,26 @@ const getUser = (userId) => {
 
 
 
-io.on('connection', (socket)=>{
+// io.on('connection', (socket)=>{
 
-  //take userId and socketId from user
-  socket.on("addUser", (userId) => {
-    addUser(userId, socket.id);
-    io.emit("getUsers", users);
-  });
+//   //take userId and socketId from user
+//   socket.on("addUser", (userId) => {
+//     addUser(userId, socket.id);
+//     io.emit("getUsers", users);
+//   });
 
-  //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    const user = getUser(receiverId);
-    io.to(user?.socketId).emit("getMessage", {
-      senderId,
-      text,
-    });
-  });
+//   //send and get message
+//   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+//     const user = getUser(receiverId);
+//     io.to(user?.socketId).emit("getMessage", {
+//       senderId,
+//       text,
+//     });
+//   });
 
-  //when disconnect
-  socket.on("disconnect", () => {
-    removeUser(socket.id);
-    io.emit("getUsers", users);
-  });
-})
+//   //when disconnect
+//   socket.on("disconnect", () => {
+//     removeUser(socket.id);
+//     io.emit("getUsers", users);
+//   });
+// })
