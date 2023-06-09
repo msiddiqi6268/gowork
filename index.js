@@ -46,7 +46,7 @@ app.use(express.static('build'))
 
 
 
-app.use('/gen',generalRoutes)
+app.use('/api/gen',generalRoutes)
 app.use('/auth',authRoutes)
 app.use('/emp',empRoutes)
 app.use('/admin',AdminRoutes)
