@@ -45,10 +45,8 @@ app.use(express.static(dir + '/build'));
 app.use(express.static('build'))
 
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(dir,"build","index.html"));
- });
- 
+
+
 app.use('/api/gen',generalRoutes)
 app.use('/auth',authRoutes)
 app.use('/emp',empRoutes)
@@ -56,6 +54,9 @@ app.use('/admin',AdminRoutes)
 app.use('/candidate',CandidateRoutes)
 app.use('/conversation', CoversationRoutes)
 // app.use('/messages', MessageRoutes);
+app.get("*", (req, res) => {
+  res.sendFile(path.join(dir,"build","index.html"));
+ });
 
 
 app.use((err, req, res, next) => {
@@ -84,7 +85,7 @@ mongoose.connect(process.env.MONGO_URL,{
 })
 
 
-// const io = new Server(8900, { cors: { origin: '*' } });
+const io = new Server(8900, { cors: { origin: '*' } });
 
 let users = [];
 
