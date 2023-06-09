@@ -41,18 +41,19 @@ app.set('public',path.join(dir,'public'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.static(dir + '/public'));
-app.use(express.static(dir + '/build'));
-app.use(express.static('build'))
+
 
 
 
 
 app.use('/api/gen',generalRoutes)
-app.use('/auth',authRoutes)
-app.use('/emp',empRoutes)
-app.use('/admin',AdminRoutes)
-app.use('/candidate',CandidateRoutes)
-app.use('/conversation', CoversationRoutes)
+app.use('/api/auth',authRoutes)
+app.use('/api/emp',empRoutes)
+app.use('/api/admin',AdminRoutes)
+app.use('/api/candidate',CandidateRoutes)
+app.use('/api/conversation', CoversationRoutes)
+
+app.use(express.static(path.join(dir, "./build")))
 // app.use('/messages', MessageRoutes);
 app.get("*", (req, res) => {
   res.sendFile(path.join(dir,"build","index.html"));
