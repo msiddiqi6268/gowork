@@ -45,9 +45,7 @@ app.use(express.static(dir + '/build'));
 app.use(express.static('build'))
 
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(dir,"build","index.html"));
- });
+
 app.use('/gen',generalRoutes)
 app.use('/auth',authRoutes)
 app.use('/emp',empRoutes)
@@ -55,7 +53,9 @@ app.use('/admin',AdminRoutes)
 app.use('/candidate',CandidateRoutes)
 app.use('/conversation', CoversationRoutes)
 // app.use('/messages', MessageRoutes);
-
+app.get("*", (req, res) => {
+  res.sendFile(path.join(dir,"build","index.html"));
+ });
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500)
