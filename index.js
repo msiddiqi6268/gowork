@@ -86,7 +86,7 @@ mongoose.connect(process.env.MONGO_URL,{
 })
 
 
-const io = new Server(8900, { cors: { origin: '*' } });
+const io = new Server({ cors: { origin: '*' } });
 
 let users = [];
 
