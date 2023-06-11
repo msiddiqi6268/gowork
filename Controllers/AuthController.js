@@ -128,6 +128,8 @@ export const register = async (req, res, next) => {
     }
 }
 
+
+
 const getAddedDays = (duration)=>{
     var someDate = new Date();
     var result = someDate.setDate(someDate.getDate() + duration);
@@ -150,7 +152,7 @@ const send_verification_email = async (user) => {
     });
     const {email,username,id}= user
     var key = crypto.randomBytes(20).toString('hex');
-    const link = `http://localhost:3000/verification/${user.id}/${key}`
+    const link = `https://gowork.pk/verification/${user.id}/${key}`
     await Validation_keys.create({ email: email, key: key })
     ejs.renderFile("views/Email_Templates/FirstEmail.ejs", { username: username,
     link:link,
