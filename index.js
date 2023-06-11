@@ -71,7 +71,6 @@ app.use((err, req, res, next) => {
   })
 
 // -------------MONGOOSE SETUP-----------
-let server = null
 const PORT = parseInt(process.env.PORT) || 9001
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL,{
