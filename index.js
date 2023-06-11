@@ -80,13 +80,13 @@ mongoose.connect(process.env.MONGO_URL,{
     useUnifiedTopology:true,
     dbName :'gowork'
 }).then(()=>{
-    server = app.listen(PORT, ()=>{console.log(`Server is running at port ${PORT}`)})
+    console.log('Web Server Connected')
 }).catch((error)=>{
     console.log(`${error}`)
 })
+const server = app.listen(PORT, ()=>{console.log(`Server is running at port ${PORT}`)})
 
-
-const io = new Server(5555,{ cors: { origin: '*' } });
+const io = new Server(server);
 
 let users = [];
 
@@ -109,6 +109,7 @@ io.on('connection', (socket)=>{
 
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
+    console.log('User connected')
     addUser(userId, socket.id);
     io.emit("getUsers", users);
   });
